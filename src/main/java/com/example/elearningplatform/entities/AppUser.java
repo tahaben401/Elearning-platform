@@ -1,6 +1,7 @@
 package com.example.elearningplatform.entities;
 
 
+import com.example.elearningplatform.services.AppUserService;
 import jakarta.persistence.*;
 import lombok.Data;
 
