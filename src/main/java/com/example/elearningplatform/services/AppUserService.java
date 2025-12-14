@@ -1,7 +1,7 @@
 package com.example.elearningplatform.services;
 
-import com.example.elearningplatform.DTO.AppUserRequestDTO;
-import com.example.elearningplatform.DTO.AppUserResponseDTO;
+import com.example.elearningplatform.DTO.AppUser.AppUserRequestDTO;
+import com.example.elearningplatform.DTO.AppUser.AppUserResponseDTO;
 import com.example.elearningplatform.Mappers.AppUserMapper;
 import com.example.elearningplatform.Repositories.AppUserRepository;
 import com.example.elearningplatform.entities.AppUser;
@@ -17,8 +17,10 @@ public class AppUserService {
         this.appUserMapper = appUserMapper;
     }
 
-    public AppUser getUserById(String id){
-        return appUserRepository.findById(id).orElse(null);
+    public AppUserResponseDTO getUserById(String id){
+
+        AppUser appUser = appUserRepository.findById(id).orElse(null);
+        return appUserMapper.toAppUserResponseDTO(appUser);
     }
 
     public AppUserResponseDTO createUser(AppUserRequestDTO appUserRequestDTO){

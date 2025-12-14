@@ -1,9 +1,11 @@
 package com.example.elearningplatform.controllers;
 
-import com.example.elearningplatform.DTO.AppUserRequestDTO;
-import com.example.elearningplatform.DTO.AppUserResponseDTO;
-import com.example.elearningplatform.entities.AppUser;
+import com.example.elearningplatform.DTO.AppUser.AppUserRequestDTO;
+import com.example.elearningplatform.DTO.AppUser.AppUserResponseDTO;
+import com.example.elearningplatform.DTO.Course.CourseRequestDTO;
+import com.example.elearningplatform.DTO.Course.CourseResponseDTO;
 import com.example.elearningplatform.services.AppUserService;
+import com.example.elearningplatform.services.CoursesService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,18 +15,24 @@ import org.springframework.web.bind.annotation.*;
 public class AppUserController {
 
     private final AppUserService appUserService;
-
-    public AppUserController(AppUserService appUserService) {
+    private final CoursesService coursesService;
+    public AppUserController(AppUserService appUserService, CoursesService coursesService)
+    {
        this.appUserService = appUserService;
+       this.coursesService = coursesService;
     }
 
-    @GetMapping
-    public AppUser getUserById(String id){
-        return appUserService.getUserById(id);
+    @GetMapping("{id}")
+    public ResponseEntity<AppUserResponseDTO> getUserById(@PathVariable String id){
+
+        return new ResponseEntity<AppUserResponseDTO>(
+                appUserService.getUserById(id),HttpStatus.OK);
     }
     
     @PostMapping
     public ResponseEntity<AppUserResponseDTO> createUser(@RequestBody AppUserRequestDTO appUserRequestDTO) {
          return  new ResponseEntity<AppUserResponseDTO>(appUserService.createUser(appUserRequestDTO), HttpStatus.CREATED);
     }
+
+
 }

@@ -1,4 +1,4 @@
-package com.example.elearningplatform.DTO;
+package com.example.elearningplatform.DTO.AppUser;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

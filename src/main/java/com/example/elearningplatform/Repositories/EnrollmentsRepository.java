@@ -11,5 +11,5 @@ import java.util.Optional;
 
 @Repository
 public interface EnrollmentsRepository extends JpaRepository<Enrollment,String> {
-    Optional<Enrollment> findEnrollmentByUserId(String userId);
+//    Optional<Enrollment> findEnrollmentByUserId(String userId);
 }

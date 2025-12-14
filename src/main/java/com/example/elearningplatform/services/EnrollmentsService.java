@@ -1,8 +1,14 @@
 package com.example.elearningplatform.services;
 
+import com.example.elearningplatform.DTO.Enrollment.EnrollmentRequestDTO;
+import com.example.elearningplatform.DTO.Enrollment.EnrollmentResponseDTO;
+import com.example.elearningplatform.Mappers.EnrollmentMapper;
+import com.example.elearningplatform.Repositories.AppUserRepository;
 import com.example.elearningplatform.Repositories.CoursesRepository;
 import com.example.elearningplatform.Repositories.EnrollmentsRepository;
+import com.example.elearningplatform.entities.AppUser;
 import com.example.elearningplatform.entities.Course;
+import com.example.elearningplatform.entities.Enrollment;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -13,14 +19,24 @@ import java.util.Optional;
 public class EnrollmentsService {
      private final EnrollmentsRepository enrollmentsRepository;
      private final CoursesRepository coursesRepository;
-     public EnrollmentsService(EnrollmentsRepository enrollmentsRepository, CoursesRepository coursesRepository) {
+     private final AppUserRepository appUserRepository;
+     private final EnrollmentMapper enrollmentMapper;
+     public EnrollmentsService(EnrollmentsRepository enrollmentsRepository, CoursesRepository coursesRepository, AppUserRepository appUserRepository,EnrollmentMapper enrollmentMapper) {
          this.enrollmentsRepository = enrollmentsRepository;
          this.coursesRepository = coursesRepository;
+         this.appUserRepository = appUserRepository;
+         this.enrollmentMapper = enrollmentMapper;
      }
 
-     public List<Optional<Course>> getUserCourses(String userId){
-         List<Optional<Course>> userCourses = new ArrayList<Optional<Course>>();
-         enrollmentsRepository.findEnrollmentByUserId(userId).ifPresent(enrollment -> userCourses.add(coursesRepository.findById(enrollment.getCourse().getId())));
-         return userCourses;
-     }
+
+    public EnrollmentResponseDTO enrollToCourse(EnrollmentRequestDTO enrollmentRequestDTO) {
+         AppUser concernedStudent = appUserRepository.findById(enrollmentRequestDTO.getStudentId()).orElse(null);
+         Course concernedCourse = coursesRepository.findById(enrollmentRequestDTO.getCourseId()).orElse(null);
+         Enrollment enrollment = new Enrollment().builder()
+                         .course(concernedCourse).
+                         student(concernedStudent).
+                         build();
+         return enrollmentMapper.toEnrollmentResponseDTO(enrollmentsRepository.save(enrollment));
+
+    }
 }
