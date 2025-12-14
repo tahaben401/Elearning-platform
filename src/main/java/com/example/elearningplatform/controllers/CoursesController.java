@@ -37,4 +37,9 @@ public class CoursesController {
     public ResponseEntity<EnrollmentResponseDTO> enrollToCourse(@RequestBody EnrollmentRequestDTO enrollmentRequestDTO){
          return new ResponseEntity<EnrollmentResponseDTO>(enrollmentsService.enrollToCourse(enrollmentRequestDTO),HttpStatus.CREATED);
     }
+
+    @GetMapping("enroll/{userId}")
+    public ResponseEntity<List<EnrollmentResponseDTO>> studentEnrolledCourses(@PathVariable String userId){
+        return new ResponseEntity<List<EnrollmentResponseDTO>>(enrollmentsService.getStudentEnrolledCourses(userId),HttpStatus.OK);
+    }
 }

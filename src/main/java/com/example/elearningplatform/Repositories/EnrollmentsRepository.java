@@ -1,5 +1,6 @@
 package com.example.elearningplatform.Repositories;
 
+import com.example.elearningplatform.entities.AppUser;
 import com.example.elearningplatform.entities.Course;
 import com.example.elearningplatform.entities.Enrollment;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,5 +12,6 @@ import java.util.Optional;
 
 @Repository
 public interface EnrollmentsRepository extends JpaRepository<Enrollment,String> {
+    List<Enrollment> findByStudent(AppUser student);
 //    Optional<Enrollment> findEnrollmentByUserId(String userId);
 }

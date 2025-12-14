@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class EnrollmentsService {
@@ -38,5 +39,13 @@ public class EnrollmentsService {
                          build();
          return enrollmentMapper.toEnrollmentResponseDTO(enrollmentsRepository.save(enrollment));
 
+    }
+
+    public List<EnrollmentResponseDTO> getStudentEnrolledCourses(String userId) {
+         AppUser appUser  = appUserRepository.findById(userId).orElse(null);
+         List<EnrollmentResponseDTO> userEnrollments =  enrollmentsRepository.findByStudent(appUser).stream().map(
+                 enrollment -> enrollmentMapper.toEnrollmentResponseDTO(enrollment)
+         ).collect(Collectors.toList());
+         return userEnrollments;
     }
 }
