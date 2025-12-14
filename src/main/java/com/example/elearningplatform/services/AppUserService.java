@@ -2,6 +2,7 @@ package com.example.elearningplatform.services;
 
 import com.example.elearningplatform.DTO.AppUserRequestDTO;
 import com.example.elearningplatform.DTO.AppUserResponseDTO;
+import com.example.elearningplatform.Mappers.AppUserMapper;
 import com.example.elearningplatform.Repositories.AppUserRepository;
 import com.example.elearningplatform.entities.AppUser;
 import org.springframework.stereotype.Service;
@@ -9,8 +10,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class AppUserService {
     private final AppUserRepository appUserRepository;
-    public AppUserService(AppUserRepository appUserRepository) {
+    private final AppUserMapper appUserMapper;
+    public AppUserService(AppUserRepository appUserRepository, AppUserMapper appUserMapper) {
+
         this.appUserRepository = appUserRepository;
+        this.appUserMapper = appUserMapper;
     }
 
     public AppUser getUserById(String id){
@@ -18,13 +22,9 @@ public class AppUserService {
     }
 
     public AppUserResponseDTO createUser(AppUserRequestDTO appUserRequestDTO){
-        //TODO
-        // get content of request dto
-        // save the user calling the repository
-        // get the new created user
-        // map it to response dto
-        // and return it to the controller
-        return new AppUserResponseDTO();
+          AppUser appUser = appUserMapper.toAppUser(appUserRequestDTO);
+          AppUser newUser = appUserRepository.save(appUser);
+          return appUserMapper.toAppUserResponseDTO(newUser);
     }
 
 }

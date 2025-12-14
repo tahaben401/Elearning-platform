@@ -4,6 +4,8 @@ import com.example.elearningplatform.DTO.AppUserRequestDTO;
 import com.example.elearningplatform.DTO.AppUserResponseDTO;
 import com.example.elearningplatform.entities.AppUser;
 import com.example.elearningplatform.services.AppUserService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,7 +24,7 @@ public class AppUserController {
     }
     
     @PostMapping
-    public AppUserResponseDTO createUser(@RequestBody AppUserRequestDTO appUserRequestDTO) {
-
+    public ResponseEntity<AppUserResponseDTO> createUser(@RequestBody AppUserRequestDTO appUserRequestDTO) {
+         return  new ResponseEntity<AppUserResponseDTO>(appUserService.createUser(appUserRequestDTO), HttpStatus.CREATED);
     }
 }

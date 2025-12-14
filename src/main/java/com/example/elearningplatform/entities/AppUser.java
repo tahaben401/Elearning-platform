@@ -1,12 +1,12 @@
 package com.example.elearningplatform.entities;
-
-
-import com.example.elearningplatform.services.AppUserService;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
-
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Data
 public class AppUser {
