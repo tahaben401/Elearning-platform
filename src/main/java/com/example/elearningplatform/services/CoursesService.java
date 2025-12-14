@@ -35,4 +35,10 @@ public class CoursesService {
     public List<CourseResponseDTO> getCourses() {
         return coursesRepository.findAll().stream().map(course -> coursesMapper.toCourseResponseDTO(course)).collect(Collectors.toList());
     }
+
+    public List<CourseResponseDTO> getInstructorCourses(String instructorId) {
+        AppUser instructor = appUserRepository.findById(instructorId).orElse(null);
+        List<CourseResponseDTO> instructorCourses = instructor.getCourses().stream().map(course -> coursesMapper.toCourseResponseDTO(course)).collect(Collectors.toList());
+        return instructorCourses;
+    }
 }

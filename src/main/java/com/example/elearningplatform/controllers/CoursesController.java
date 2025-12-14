@@ -24,9 +24,11 @@ public class CoursesController {
         this.enrollmentsService = enrollmentsService;
     }
     @GetMapping
-    public List<CourseResponseDTO> getCourses(){
-//        return "Courses";
-        return coursesService.getCourses();
+    public List<CourseResponseDTO> getCourses(@RequestParam(required = false) String instructorId){
+        if(instructorId == null){
+            return coursesService.getCourses();
+        }
+        return coursesService.getInstructorCourses(instructorId);
     }
 
     @PostMapping
