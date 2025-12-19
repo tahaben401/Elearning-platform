@@ -1,12 +1,18 @@
 package com.example.elearningplatform.config.security;
+import com.example.elearningplatform.services.auth.AppUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
@@ -14,6 +20,10 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+
+    private AppUserDetailsService appUserDetailsService ;
+    private AuthEntryPointJwt unauthorizedHandler ;
+    private AuthTokenFilter authenticationJwtTokenFilter;
 
     private static final String[] PUBLIC_URLS = {
             "/courses/**",
@@ -36,14 +46,37 @@ public class SecurityConfig {
             "/swagger-ui.html"
     };
 
+    @Bean
+    // The core interface in Spring Security responsible for authenticating users
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception{
+           return authenticationConfiguration.getAuthenticationManager();
+    }
+    @Bean
+    public PasswordEncoder passwordEncoder(){
 
+        return new BCryptPasswordEncoder();
+    }
     @Bean
     public SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
-        return http.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth -> auth.requestMatchers(PUBLIC_URLS)
-                .permitAll()   )
-                .sessionManagement(sess -> sess.sessionCreationPolicy(STATELESS))
+        http
+                .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
-                .build();
+                .exceptionHandling(e ->
+                        e.authenticationEntryPoint(unauthorizedHandler)
+                )
+                .sessionManagement(session->
+                        session.sessionCreationPolicy(STATELESS)
+                )
+                .authorizeHttpRequests(
+                        auth -> auth
+                                .requestMatchers(PUBLIC_URLS)
+                                .permitAll()
+                                .anyRequest()
+                                // any other request should be authenticated
+                                .authenticated())
+                ;
+        http.addFilterBefore(authenticationJwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
+        return http.build();
+
     }
 }

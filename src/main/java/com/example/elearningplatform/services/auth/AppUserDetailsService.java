@@ -3,6 +3,7 @@ package com.example.elearningplatform.services.auth;
 import com.example.elearningplatform.Repositories.AppUserRepository;
 import com.example.elearningplatform.entities.AppUser;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -25,7 +26,7 @@ public class AppUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("User not found with email"+username);
         }
 
-        return new org.springframework.security.core.userdetails.User(
+        return new User(
                 user.getEmail(),
                 user.getPassword(),
                 Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + user.getRole()))
