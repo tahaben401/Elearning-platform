@@ -51,7 +51,7 @@ public class JwtUtil {
                     .parseSignedClaims(token);
             return true;
             // we are here able to verify with our secret key the token
-
+            // if true is returned then the jwt token is valid
         } catch(Exception e) {
             log.error("JWT validation error : "+e.getMessage());
         }
