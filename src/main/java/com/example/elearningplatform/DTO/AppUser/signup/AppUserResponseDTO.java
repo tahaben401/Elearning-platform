@@ -1,4 +1,4 @@
-package com.example.elearningplatform.DTO.AppUser;
+package com.example.elearningplatform.DTO.AppUser.signup;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -28,9 +28,9 @@ public class JwtUtil {
         this.secretKey = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
     }
     // to generate a jwt token for a user's email
-    public String generateToken(AppUser user){
+    public String generateToken(String email){
         return Jwts.builder()
-                .subject(user.getEmail())
+                .subject(email)
                 .issuedAt(new Date())
                 .expiration(new Date(new Date().getTime() + jwtExpiration))
                 .signWith(secretKey)
