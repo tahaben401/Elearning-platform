@@ -22,7 +22,7 @@ public class EnrollmentResponseDTO {
 
     private Course course;
 
-    private AppUser student;
+//    private AppUser student;
 
     private Date created_at;
 

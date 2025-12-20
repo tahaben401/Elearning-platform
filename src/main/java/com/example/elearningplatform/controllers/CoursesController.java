@@ -6,6 +6,7 @@ import com.example.elearningplatform.DTO.Enrollment.EnrollmentRequestDTO;
 import com.example.elearningplatform.DTO.Enrollment.EnrollmentResponseDTO;
 import com.example.elearningplatform.services.CoursesService;
 import com.example.elearningplatform.services.EnrollmentsService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("courses")
 public class CoursesController {
@@ -61,9 +63,15 @@ public class CoursesController {
         }
     }
 
-//    @GetMapping("/my-enrollments")
-//    @PreAuthorize("hasRole('STUDENT')")
-//    public ResponseEntity<List<EnrollmentResponseDTO>> studentEnrolledCourses(@AuthenticationPrincipal UserDetails userDetails){
-//        return new ResponseEntity<List<EnrollmentResponseDTO>>(enrollmentsService.getStudentEnrolledCourses(userId),HttpStatus.OK);
-//    }
+    @GetMapping("/my-enrollments")
+    @PreAuthorize("hasRole('STUDENT')")
+    public ResponseEntity<List<EnrollmentResponseDTO>> studentEnrolledCourses(@AuthenticationPrincipal UserDetails userDetails) throws Exception {
+        try {
+            String studentEmail = userDetails.getUsername();
+            List<EnrollmentResponseDTO> studentEnrollments = enrollmentsService.getStudentEnrolledCourses(studentEmail);
+            return ResponseEntity.status(HttpStatus.OK).body(studentEnrollments);
+        } catch(Exception e){
+            throw new Exception("ERROR occured : "+e.getMessage());
+        }
+    }
 }

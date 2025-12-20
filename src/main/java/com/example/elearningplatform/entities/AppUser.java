@@ -18,6 +18,7 @@ public class AppUser {
     private String lastname;
     @Column(unique=true)
     private String email;
+    @JsonIgnore
     private String password;
     private String role;
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)

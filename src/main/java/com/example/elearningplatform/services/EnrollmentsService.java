@@ -44,11 +44,14 @@ public class EnrollmentsService {
 
     }
 
-    public List<EnrollmentResponseDTO> getStudentEnrolledCourses(String userId) {
-         AppUser appUser  = appUserRepository.findById(userId).orElse(null);
-         List<EnrollmentResponseDTO> userEnrollments =  enrollmentsRepository.findByStudent(appUser).stream().map(
-                 enrollment -> enrollmentMapper.toEnrollmentResponseDTO(enrollment)
-         ).collect(Collectors.toList());
-         return userEnrollments;
+    public List<EnrollmentResponseDTO> getStudentEnrolledCourses(String studentEmail) throws Exception {
+        if (appUserRepository.existsByEmail(studentEmail)) {
+            AppUser appUser = appUserRepository.findByEmail(studentEmail);
+            List<EnrollmentResponseDTO> userEnrollments = enrollmentsRepository.findByStudent(appUser).stream().map(
+                    enrollment -> enrollmentMapper.toEnrollmentResponseDTO(enrollment)
+            ).collect(Collectors.toList());
+            return userEnrollments;
+        }
+        throw new Exception("User not found");
     }
 }
