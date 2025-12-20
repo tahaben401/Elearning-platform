@@ -44,13 +44,26 @@ public class CoursesController {
         }
 
     }
-    @PostMapping("enroll")
-    public ResponseEntity<EnrollmentResponseDTO> enrollToCourse(@RequestBody EnrollmentRequestDTO enrollmentRequestDTO){
-         return new ResponseEntity<EnrollmentResponseDTO>(enrollmentsService.enrollToCourse(enrollmentRequestDTO),HttpStatus.CREATED);
+    @PostMapping("/enroll")
+    @PreAuthorize("hasRole('STUDENT')")
+    public ResponseEntity<EnrollmentResponseDTO> enrollToCourse(@RequestBody EnrollmentRequestDTO enrollmentRequestDTO,@AuthenticationPrincipal UserDetails userDetails) throws Exception {
+
+        try {
+            String studentEmail = userDetails.getUsername();
+            EnrollmentResponseDTO enrollment = enrollmentsService.enrollToCourse(
+                    enrollmentRequestDTO,
+                    studentEmail
+            );
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(enrollment);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    @GetMapping("enroll/{userId}")
-    public ResponseEntity<List<EnrollmentResponseDTO>> studentEnrolledCourses(@PathVariable String userId){
-        return new ResponseEntity<List<EnrollmentResponseDTO>>(enrollmentsService.getStudentEnrolledCourses(userId),HttpStatus.OK);
-    }
+//    @GetMapping("/my-enrollments")
+//    @PreAuthorize("hasRole('STUDENT')")
+//    public ResponseEntity<List<EnrollmentResponseDTO>> studentEnrolledCourses(@AuthenticationPrincipal UserDetails userDetails){
+//        return new ResponseEntity<List<EnrollmentResponseDTO>>(enrollmentsService.getStudentEnrolledCourses(userId),HttpStatus.OK);
+//    }
 }

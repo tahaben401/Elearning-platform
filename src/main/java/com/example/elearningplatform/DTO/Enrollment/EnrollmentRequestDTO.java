@@ -10,6 +10,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class EnrollmentRequestDTO {
-    private String studentId;
     private String courseId;
 }

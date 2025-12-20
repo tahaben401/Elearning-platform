@@ -30,14 +30,17 @@ public class EnrollmentsService {
      }
 
 
-    public EnrollmentResponseDTO enrollToCourse(EnrollmentRequestDTO enrollmentRequestDTO) {
-         AppUser concernedStudent = appUserRepository.findById(enrollmentRequestDTO.getStudentId()).orElse(null);
-         Course concernedCourse = coursesRepository.findById(enrollmentRequestDTO.getCourseId()).orElse(null);
-         Enrollment enrollment = new Enrollment().builder()
-                         .course(concernedCourse).
-                         student(concernedStudent).
-                         build();
-         return enrollmentMapper.toEnrollmentResponseDTO(enrollmentsRepository.save(enrollment));
+    public EnrollmentResponseDTO enrollToCourse(EnrollmentRequestDTO enrollmentRequestDTO,String studentEmail) throws Exception {
+         if(appUserRepository.existsByEmail(studentEmail)) {
+             AppUser concernedStudent = appUserRepository.findByEmail(studentEmail);
+             Course concernedCourse = coursesRepository.findById(enrollmentRequestDTO.getCourseId()).orElse(null);
+             Enrollment enrollment = new Enrollment().builder()
+                     .course(concernedCourse).
+                     student(concernedStudent).
+                     build();
+             return enrollmentMapper.toEnrollmentResponseDTO(enrollmentsRepository.save(enrollment));
+         }
+         throw new Exception("user doesnt exist");
 
     }
 
