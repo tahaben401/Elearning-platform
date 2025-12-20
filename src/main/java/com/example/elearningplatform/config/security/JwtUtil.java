@@ -1,6 +1,4 @@
 package com.example.elearningplatform.config.security;
-
-import com.example.elearningplatform.entities.AppUser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;

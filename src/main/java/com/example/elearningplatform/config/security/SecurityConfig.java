@@ -18,15 +18,16 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private AppUserDetailsService appUserDetailsService ;
-    private AuthEntryPointJwt unauthorizedHandler ;
-    private AuthTokenFilter authenticationJwtTokenFilter;
+    private final AppUserDetailsService appUserDetailsService ;
+    private final AuthEntryPointJwt unauthorizedHandler ;
+    private final AuthTokenFilter authenticationJwtTokenFilter;
 
     private static final String[] PUBLIC_URLS = {
-            "/courses/**",
+            "/courses",
             "/users/**",
             "/auth/**",
             "/error",

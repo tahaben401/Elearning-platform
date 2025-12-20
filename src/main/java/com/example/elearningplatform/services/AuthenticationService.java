@@ -11,12 +11,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthenticationService {
     private final AppUserRepository appUserRepository;
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
     private final AppUserMapper appUserMapper;
     public AuthenticationService(AppUserRepository appUserRepository,PasswordEncoder passwordEncoder, AppUserMapper appUserMapper) {
 
         this.appUserRepository = appUserRepository;
         this.appUserMapper = appUserMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public AppUserResponseDTO getUserById(String id){
