@@ -4,6 +4,8 @@ import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -26,9 +28,18 @@ public class JwtUtil {
         this.secretKey = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
     }
     // to generate a jwt token for a user's email
-    public String generateToken(String email){
+    public String generateToken(UserDetails userDetails){
+
+        String userRole = userDetails.getAuthorities()
+                .stream()
+                .findFirst()
+                .map(GrantedAuthority::getAuthority)
+                .orElse("ROLE_USER")
+                ;
+
         return Jwts.builder()
-                .subject(email)
+                .subject(userDetails.getUsername())
+                .claim("role",userRole)
                 .issuedAt(new Date())
                 .expiration(new Date(new Date().getTime() + jwtExpiration))
                 .signWith(secretKey)
@@ -36,16 +47,29 @@ public class JwtUtil {
     }
     // get the email of the user from the token
     public String getUserFromToken(String token){
-        return Jwts.parser().verifyWith(secretKey).build()
+        return Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
                 .parseSignedClaims(token)
                 .getPayload()
                 .getSubject();
     }
 
+    public String getRoleFromToken(String token) {
+        return Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .get("role", String.class);
+    }
+
     public boolean validateJwtToken(String token){
         try {
 
-            Jwts.parser().verifyWith(secretKey).build()
+            Jwts.parser()
+                    .verifyWith(secretKey)
+                    .build()
                     .parseSignedClaims(token);
             return true;
             // we are here able to verify with our secret key the token
