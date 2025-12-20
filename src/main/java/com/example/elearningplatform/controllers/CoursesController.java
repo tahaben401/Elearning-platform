@@ -6,6 +6,7 @@ import com.example.elearningplatform.DTO.Enrollment.EnrollmentRequestDTO;
 import com.example.elearningplatform.DTO.Enrollment.EnrollmentResponseDTO;
 import com.example.elearningplatform.services.CoursesService;
 import com.example.elearningplatform.services.EnrollmentsService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,13 +31,14 @@ public class CoursesController {
         return ResponseEntity.ok(coursesService.getCourses());
     }
 
+    @SecurityRequirement(name = "Authorization")
     @GetMapping("/instructor/{instructorId}")
     public ResponseEntity<List<CourseResponseDTO>> getCoursesByInstructor(
             @PathVariable String instructorId) {
         return ResponseEntity.ok(coursesService.getInstructorCourses(instructorId));
     }
 
-
+    @SecurityRequirement(name = "Authorization")
     @GetMapping("/my-courses")
     @PreAuthorize("hasRole('INSTRUCTOR')")
     public ResponseEntity<List<CourseResponseDTO>> getMyCourses(
@@ -50,6 +52,7 @@ public class CoursesController {
         }
     }
 
+    @SecurityRequirement(name = "Authorization")
     @PostMapping
     @PreAuthorize("hasRole('INSTRUCTOR')")
     public ResponseEntity<CourseResponseDTO> createCourse(@RequestBody CourseRequestDTO courseRequestDTO,
@@ -63,6 +66,8 @@ public class CoursesController {
         }
 
     }
+
+    @SecurityRequirement(name = "Authorization")
     @PostMapping("/enroll")
     @PreAuthorize("hasRole('STUDENT')")
     public ResponseEntity<EnrollmentResponseDTO> enrollToCourse(@RequestBody EnrollmentRequestDTO enrollmentRequestDTO,@AuthenticationPrincipal UserDetails userDetails) throws Exception {
@@ -80,6 +85,8 @@ public class CoursesController {
         }
     }
 
+
+    @SecurityRequirement(name = "Authorization")
     @GetMapping("/my-enrollments")
     @PreAuthorize("hasRole('STUDENT')")
     public ResponseEntity<List<EnrollmentResponseDTO>> studentEnrolledCourses(@AuthenticationPrincipal UserDetails userDetails) throws Exception {
