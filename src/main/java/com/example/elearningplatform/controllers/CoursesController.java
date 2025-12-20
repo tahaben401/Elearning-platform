@@ -6,7 +6,9 @@ import com.example.elearningplatform.DTO.Enrollment.EnrollmentRequestDTO;
 import com.example.elearningplatform.DTO.Enrollment.EnrollmentResponseDTO;
 import com.example.elearningplatform.services.CoursesService;
 import com.example.elearningplatform.services.EnrollmentsService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,12 +28,16 @@ public class CoursesController {
         this.coursesService = coursesService;
         this.enrollmentsService = enrollmentsService;
     }
+
+    @Tag(name="Get",description = "Get Courses")
+    @Operation(summary = "Get all Courses",description = "Retrieve all courses whether you are student or instructor")
     @GetMapping
     public ResponseEntity<List<CourseResponseDTO>> getAllCourses() {
         return ResponseEntity.ok(coursesService.getCourses());
     }
 
-    @SecurityRequirement(name = "Authorization")
+    @Tag(name="Get",description = "Get Courses")
+    @Operation(summary = "Get instructor's courses",description = "Search for courses done by a specific instructor")
     @GetMapping("/instructor/{instructorId}")
     public ResponseEntity<List<CourseResponseDTO>> getCoursesByInstructor(
             @PathVariable String instructorId) {
@@ -39,6 +45,8 @@ public class CoursesController {
     }
 
     @SecurityRequirement(name = "Authorization")
+    @Tag(name="Get",description = "Get Courses")
+    @Operation(summary = "Get my courses",description = "As an instructor , i want to see all the courses i created")
     @GetMapping("/my-courses")
     @PreAuthorize("hasRole('INSTRUCTOR')")
     public ResponseEntity<List<CourseResponseDTO>> getMyCourses(
@@ -53,6 +61,8 @@ public class CoursesController {
     }
 
     @SecurityRequirement(name = "Authorization")
+    @Tag(name="Post",description = "publish/enroll to Course")
+    @Operation(summary = "Publish a Course",description = "As an instuctor, I want to publish a course")
     @PostMapping
     @PreAuthorize("hasRole('INSTRUCTOR')")
     public ResponseEntity<CourseResponseDTO> createCourse(@RequestBody CourseRequestDTO courseRequestDTO,
@@ -68,6 +78,8 @@ public class CoursesController {
     }
 
     @SecurityRequirement(name = "Authorization")
+    @Tag(name="Post",description = "publish/enroll to Course")
+    @Operation(summary = "Enroll to a Course",description = "As a student i want to enroll to a specific course")
     @PostMapping("/enroll")
     @PreAuthorize("hasRole('STUDENT')")
     public ResponseEntity<EnrollmentResponseDTO> enrollToCourse(@RequestBody EnrollmentRequestDTO enrollmentRequestDTO,@AuthenticationPrincipal UserDetails userDetails) throws Exception {
@@ -87,6 +99,8 @@ public class CoursesController {
 
 
     @SecurityRequirement(name = "Authorization")
+    @Tag(name="Get",description = "Get Courses")
+    @Operation(summary = "Get my enrollments",description = "As a student , I want to see the courses that I enrolled to")
     @GetMapping("/my-enrollments")
     @PreAuthorize("hasRole('STUDENT')")
     public ResponseEntity<List<EnrollmentResponseDTO>> studentEnrolledCourses(@AuthenticationPrincipal UserDetails userDetails) throws Exception {

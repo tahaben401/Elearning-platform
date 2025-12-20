@@ -6,6 +6,8 @@ import com.example.elearningplatform.DTO.AppUser.signup.AppUserResponseDTO;
 import com.example.elearningplatform.Repositories.AppUserRepository;
 import com.example.elearningplatform.config.security.JwtUtil;
 import com.example.elearningplatform.services.AuthenticationService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -35,6 +37,8 @@ public class AuthenticationController {
 
     }
 
+    @Tag(name="Auth",description = "SignIn/SignUp")
+    @Operation(summary = "Sign In",description = "As a user, i want to log in to my account")
     @PostMapping("/signin")
     public String authenticateUser(@RequestBody AppUserRequestLoginDTO appUserRequestLoginDTO){
          Authentication authentication = authenticationManager.authenticate(
@@ -47,6 +51,8 @@ public class AuthenticationController {
          return jwtUtils.generateToken(userDetails.getUsername());
     }
 
+    @Tag(name="Auth",description = "SignIn/SignUp")
+    @Operation(summary = "Sign Up",description = "As a user, i want to register, wether as a Student or Instructor")
     @PostMapping("/signup")
     public String registerUser(@RequestBody AppUserRequestRegisterDTO appUserRequestRegisterDTO){
            if( appUserRepository.existsByEmail(appUserRequestRegisterDTO.getEmail()) ){
