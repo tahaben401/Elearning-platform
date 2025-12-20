@@ -7,6 +7,7 @@ import com.example.elearningplatform.Repositories.AppUserRepository;
 import com.example.elearningplatform.Repositories.CoursesRepository;
 import com.example.elearningplatform.entities.AppUser;
 import com.example.elearningplatform.entities.Course;
+import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -43,5 +44,14 @@ public class CoursesService {
         AppUser instructor = appUserRepository.findById(instructorId).orElse(null);
         List<CourseResponseDTO> instructorCourses = instructor.getCourses().stream().map(course -> coursesMapper.toCourseResponseDTO(course)).collect(Collectors.toList());
         return instructorCourses;
+    }
+
+    public  List<CourseResponseDTO> getMyCourses(String instructorEmail) throws Exception {
+        if(appUserRepository.existsByEmail(instructorEmail)) {
+            AppUser authenticatedInstructor = appUserRepository.findByEmail(instructorEmail);
+            List<CourseResponseDTO> instructorCourses = authenticatedInstructor.getCourses().stream().map(course -> coursesMapper.toCourseResponseDTO(course)).collect(Collectors.toList());
+            return instructorCourses;
+        }
+        throw new Exception("User doesnt exist");
     }
 }

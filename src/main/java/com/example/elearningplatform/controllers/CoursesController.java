@@ -33,6 +33,19 @@ public class CoursesController {
         return coursesService.getInstructorCourses(instructorId);
     }
 
+    @GetMapping("/my-courses")
+    @PreAuthorize("hasRole('INSTRUCTOR')")
+    public ResponseEntity<List<CourseResponseDTO>> getMyCourses(
+            @AuthenticationPrincipal UserDetails userDetails) throws Exception {
+
+        try {
+            String instructorEmail = userDetails.getUsername();
+            return ResponseEntity.ok(coursesService.getMyCourses(instructorEmail));
+        } catch(Exception e){
+            throw new Exception("Error occured : "+e.getMessage());
+        }
+    }
+
     @PostMapping
     @PreAuthorize("hasRole('INSTRUCTOR')")
     public ResponseEntity<CourseResponseDTO> createCourse(@RequestBody CourseRequestDTO courseRequestDTO,
