@@ -26,12 +26,16 @@ public class CoursesController {
         this.enrollmentsService = enrollmentsService;
     }
     @GetMapping
-    public List<CourseResponseDTO> getCourses(@RequestParam(required = false) String instructorId){
-        if(instructorId == null){
-            return coursesService.getCourses();
-        }
-        return coursesService.getInstructorCourses(instructorId);
+    public ResponseEntity<List<CourseResponseDTO>> getAllCourses() {
+        return ResponseEntity.ok(coursesService.getCourses());
     }
+
+    @GetMapping("/instructor/{instructorId}")
+    public ResponseEntity<List<CourseResponseDTO>> getCoursesByInstructor(
+            @PathVariable String instructorId) {
+        return ResponseEntity.ok(coursesService.getInstructorCourses(instructorId));
+    }
+
 
     @GetMapping("/my-courses")
     @PreAuthorize("hasRole('INSTRUCTOR')")
