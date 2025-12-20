@@ -23,13 +23,16 @@ public class CoursesService {
         this.appUserRepository = appUserRepository;
     }
 
-    public CourseResponseDTO addCourse(CourseRequestDTO courseRequestDTO) {
-           AppUser concernedInstructor = appUserRepository.findById(courseRequestDTO.getInstructorId()).orElse(null);
-           Course newCourse = new Course().builder().courseName(courseRequestDTO.getCourseName())
-                   .description(courseRequestDTO.getDescription())
-                   .instructor(concernedInstructor)
-                   .build();
-           return coursesMapper.toCourseResponseDTO(coursesRepository.save(newCourse));
+    public CourseResponseDTO addCourse(CourseRequestDTO courseRequestDTO,String instructorEmail) throws Exception{
+        if(appUserRepository.existsByEmail(instructorEmail)) {
+            AppUser concernedInstructor = appUserRepository.findByEmail(instructorEmail);
+            Course newCourse = new Course().builder().courseName(courseRequestDTO.getCourseName())
+                    .description(courseRequestDTO.getDescription())
+                    .instructor(concernedInstructor)
+                    .build();
+            return coursesMapper.toCourseResponseDTO(coursesRepository.save(newCourse));
+        }
+        throw new Exception("User doesnt exist");
     }
 
     public List<CourseResponseDTO> getCourses() {
