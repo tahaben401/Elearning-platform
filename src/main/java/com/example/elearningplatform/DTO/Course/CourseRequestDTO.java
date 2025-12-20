@@ -13,5 +13,4 @@ import lombok.NoArgsConstructor;
 public class CourseRequestDTO {
     private String courseName;
     private String description;
-    private String instructorId;
 }
